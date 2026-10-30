@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 const apiTarget = process.env.API_PROXY_TARGET ?? 'http://localhost:8000'
+const agentTarget = process.env.AGENT_PROXY_TARGET ?? 'http://localhost:8001'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
     proxy: {
       '/api': apiTarget,
       '/health': apiTarget,
+      '/agent': agentTarget,
     },
   },
 })

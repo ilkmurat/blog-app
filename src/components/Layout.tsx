@@ -35,6 +35,7 @@ export default function Layout() {
             <NavLink to="/" end>Blog</NavLink>
             <NavLink to="/categories">Categories</NavLink>
             <NavLink to="/tags">Tags</NavLink>
+            <NavLink to="/chat">Chat</NavLink>
             <NavLink to="/about">About</NavLink>
           </nav>
           <div className="account">

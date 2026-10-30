@@ -28,8 +28,22 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(BASE + path, {
+/** Builds an ApiError from a failed response, using FastAPI's `detail` when present. */
+export async function errorFrom(res: Response): Promise<ApiError> {
+  let message = res.statusText
+  try {
+    const body = await res.json()
+    message = Array.isArray(body.detail)
+      ? body.detail.map((d: { loc?: string[]; msg: string }) => `${d.loc?.at(-1) ?? ''}: ${d.msg}`).join('; ')
+      : body.detail ?? message
+  } catch {
+    // non-JSON error body
+  }
+  return new ApiError(res.status, message)
+}
+
+export function apiFetch(path: string, init?: RequestInit): Promise<Response> {
+  return fetch(BASE + path, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
@@ -37,18 +51,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ...init?.headers,
     },
   })
-  if (!res.ok) {
-    let message = res.statusText
-    try {
-      const body = await res.json()
-      message = Array.isArray(body.detail)
-        ? body.detail.map((d: { loc?: string[]; msg: string }) => `${d.loc?.at(-1) ?? ''}: ${d.msg}`).join('; ')
-        : body.detail ?? message
-    } catch {
-      // non-JSON error body
-    }
-    throw new ApiError(res.status, message)
-  }
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await apiFetch(path, init)
+  if (!res.ok) throw await errorFrom(res)
   return (res.status === 204 ? undefined : await res.json()) as T
 }
 

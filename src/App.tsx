@@ -7,6 +7,7 @@ import Tags from './pages/Tags'
 import Taxonomy from './pages/Taxonomy'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
+import Chat from './pages/Chat'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminPosts from './pages/admin/AdminPosts'
 import PostEditor from './pages/admin/PostEditor'
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="chat" element={<Chat />} />
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<AdminPosts />} />
           <Route path="posts/new" element={<PostEditor />} />
