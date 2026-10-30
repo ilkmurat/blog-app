@@ -1,7 +1,24 @@
-import type { Post, PostInput, PostPage, SearchHit, TermWithCount } from './types'
+import type {
+  AuthResponse,
+  LikeResult,
+  Post,
+  PostInput,
+  PostPage,
+  SearchHit,
+  TermWithCount,
+  User,
+  UserInput,
+} from './types'
 
 // Empty by default: requests go to the same origin (nginx in Docker, Vite proxy in dev).
 const BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+
+let authToken: string | null = null
+
+/** Set by the auth provider; sent as a bearer token on every request. */
+export function setAuthToken(token: string | null) {
+  authToken = token
+}
 
 export class ApiError extends Error {
   status: number
@@ -14,7 +31,11 @@ export class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(BASE + path, {
     ...init,
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      ...init?.headers,
+    },
   })
   if (!res.ok) {
     let message = res.statusText
@@ -53,6 +74,19 @@ export const api = {
   updatePost: (slug: string, body: Partial<PostInput>) =>
     request<Post>(`/api/v1/posts/${encodeURIComponent(slug)}`, { method: 'PATCH', body: JSON.stringify(body) }),
   deletePost: (slug: string) => request<void>(`/api/v1/posts/${encodeURIComponent(slug)}`, { method: 'DELETE' }),
+  likePost: (slug: string) => request<LikeResult>(`/api/v1/posts/${encodeURIComponent(slug)}/like`, { method: 'POST' }),
   categories: () => request<TermWithCount[]>('/api/v1/categories'),
   tags: () => request<TermWithCount[]>('/api/v1/tags'),
+  createCategory: (name: string) =>
+    request<TermWithCount>('/api/v1/categories', { method: 'POST', body: JSON.stringify({ name }) }),
+  createTag: (name: string) => request<TermWithCount>('/api/v1/tags', { method: 'POST', body: JSON.stringify({ name }) }),
+
+  register: (body: UserInput) =>
+    request<AuthResponse>('/api/v1/auth/register', { method: 'POST', body: JSON.stringify(body) }),
+  login: (username: string, password: string) =>
+    request<AuthResponse>('/api/v1/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
+  logout: () => request<void>('/api/v1/auth/logout', { method: 'POST' }),
+  me: () => request<User>('/api/v1/auth/me'),
+  users: () => request<User[]>('/api/v1/users'),
+  createUser: (body: UserInput) => request<User>('/api/v1/users', { method: 'POST', body: JSON.stringify(body) }),
 }

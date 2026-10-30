@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import Markdown from 'react-markdown'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import LikeButton from '../components/LikeButton'
 import PostCard from '../components/PostCard'
 import Status from '../components/Status'
 import { api } from '../lib/api'
+import { useAuth } from '../lib/auth'
 import { formatDate } from '../lib/format'
 import { useApi } from '../lib/hooks'
 import type { Post } from '../lib/types'
@@ -23,7 +25,9 @@ function Related({ post }: { post: Post }) {
 export default function PostPage() {
   const { slug = '' } = useParams()
   const navigate = useNavigate()
-  const state = useApi(() => api.getPost(slug), [slug])
+  const { user, ready } = useAuth()
+  // Refetch when the user changes so `liked_by_me` matches who is logged in.
+  const state = useApi(() => (ready ? api.getPost(slug) : new Promise<never>(() => {})), [slug, ready, user?.id])
   const [deleteError, setDeleteError] = useState<string>()
 
   async function remove() {
@@ -43,10 +47,12 @@ export default function PostPage() {
           <article className="post">
             <div className="post-toolbar">
               <Link to="/" className="back">← All posts</Link>
-              <div className="actions">
-                <Link to={`/post/${post.slug}/edit`} className="button">Edit</Link>
-                <button className="button danger" onClick={remove}>Delete</button>
-              </div>
+              {user?.is_admin && (
+                <div className="actions">
+                  <Link to={`/admin/posts/${post.slug}/edit`} className="button">Edit</Link>
+                  <button className="button danger" onClick={remove}>Delete</button>
+                </div>
+              )}
             </div>
             {deleteError && <p className="error">{deleteError}</p>}
             <div className="meta">
@@ -59,10 +65,14 @@ export default function PostPage() {
             <div className="prose">
               <Markdown>{post.content}</Markdown>
             </div>
-            <div className="tag-row">
-              {post.tags.map((t) => (
-                <Link key={t.slug} to={`/tag/${t.slug}`} className="tag">#{t.name}</Link>
-              ))}
+            <div className="post-footer">
+              {/* Remount on fresh data so local like state never outlives a refetch. */}
+              <LikeButton key={`${post.slug}-${post.like_count}-${post.liked_by_me}`} post={post} />
+              <div className="tag-row">
+                {post.tags.map((t) => (
+                  <Link key={t.slug} to={`/tag/${t.slug}`} className="tag">#{t.name}</Link>
+                ))}
+              </div>
             </div>
           </article>
           <Related post={post} />

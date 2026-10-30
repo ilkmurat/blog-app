@@ -9,6 +9,7 @@ export default function PostCard({ post, score }: { post: PostSummary; score?: n
         <Link to={`/category/${post.category.slug}`} className="category-badge">{post.category.name}</Link>
         <span>{formatDate(post.published_at)}</span>
         <span>· {post.reading_time} min read</span>
+        <span className="likes" title="Likes">· ♥ {post.like_count}</span>
         {score !== undefined && <span className="score">· {Math.round(score * 100)}% match</span>}
       </div>
       <h2><Link to={`/post/${post.slug}`}>{post.title}</Link></h2>

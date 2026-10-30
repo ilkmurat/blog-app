@@ -8,7 +8,9 @@ Blog frontend built with React, TypeScript, Vite and React Router. Content comes
 - **Semantic search** (toggle next to the search box), powered by Qdrant
 - Post pages rendered from Markdown, with semantically related posts
 - Categories and tags (index pages + filtered post lists), sidebar with counts and recent posts
-- Editor to create, edit and delete posts (`+ Write`)
+- Like button: anyone can like; anonymous likes are unlimited, members like a post once
+- Sign up / log in modal (first name, last name, email, username, password)
+- Admin panel at **`/admin`** (default login `murat` / `murat`): manage posts, create categories, tags and users
 - Responsive layout with automatic dark mode
 
 ## Run everything with Docker
@@ -36,6 +38,7 @@ npm install && npm run dev               # http://localhost:5173, /api proxied t
 | Variable | When | Default |
 |---|---|---|
 | `VITE_API_URL` | build time; absolute API URL when the API is on another origin | same origin |
+| `VITE_BASE` | build time; base path the app is served from (GitHub Pages sets `/<repo>/`) | `/` |
 | `API_PROXY_TARGET` | `npm run dev` proxy target | `http://localhost:8000` |
 
 ## GitHub Pages
