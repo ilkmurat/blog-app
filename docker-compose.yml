@@ -1,0 +1,13 @@
+# Full stack: frontend (nginx) + backend API + Postgres + Qdrant.
+# Expects the backend repo checked out next to this one at ../blog-api.
+name: inkwell
+
+include:
+  - ../blog-api/docker-compose.yml
+
+services:
+  web:
+    build: .
+    ports: ["3000:80"]
+    depends_on:
+      - api

@@ -121,3 +121,39 @@ a:hover { color: var(--accent); }
 .not-found h1 { font-size: 4rem; margin: 0; color: var(--accent); }
 
 .site-footer { border-top: 1px solid var(--border); padding: 24px 0; color: var(--muted); font-size: .875rem; }
+
+.nav a.nav-cta { color: var(--accent); }
+
+.search-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.search-row .search { flex: 1 1 240px; }
+.toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.toggle button { border: 0; background: none; color: var(--muted); padding: 0 14px; font: inherit; cursor: pointer; min-height: 44px; }
+.toggle button.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.score { color: var(--accent); }
+
+.loading, .error { padding: 12px 0; }
+.error { color: #dc2626; }
+
+.post-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.post-toolbar .back { margin: 0; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.button {
+  display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 8px; font: inherit; font-size: .9rem;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer;
+}
+.button:hover { border-color: var(--accent); }
+.button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.button.primary:disabled { opacity: .6; cursor: default; }
+.button.danger:hover { border-color: #dc2626; color: #dc2626; }
+
+.editor { display: flex; flex-direction: column; gap: 16px; }
+.editor label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
+.editor .row label { flex: 1 1 200px; }
+.editor label small { color: var(--muted); font-weight: 400; }
+.editor input, .editor textarea {
+  font: inherit; font-weight: 400; font-size: 1rem; padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.editor input:focus, .editor textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.editor textarea.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9rem; }
+.editor .row { display: flex; gap: 16px; flex-wrap: wrap; }

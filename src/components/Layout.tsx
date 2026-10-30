@@ -18,6 +18,7 @@ export default function Layout() {
             <NavLink to="/categories">Categories</NavLink>
             <NavLink to="/tags">Tags</NavLink>
             <NavLink to="/about">About</NavLink>
+            <NavLink to="/new" className="nav-cta">+ Write</NavLink>
           </nav>
         </div>
       </header>

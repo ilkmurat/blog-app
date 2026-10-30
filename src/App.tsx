@@ -6,6 +6,7 @@ import Categories from './pages/Categories'
 import Tags from './pages/Tags'
 import Taxonomy from './pages/Taxonomy'
 import About from './pages/About'
+import Editor from './pages/Editor'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -13,7 +14,9 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="new" element={<Editor />} />
         <Route path="post/:slug" element={<PostPage />} />
+        <Route path="post/:slug/edit" element={<Editor />} />
         <Route path="categories" element={<Categories />} />
         <Route path="category/:slug" element={<Taxonomy kind="category" />} />
         <Route path="tags" element={<Tags />} />

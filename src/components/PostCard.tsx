@@ -1,19 +1,21 @@
 import { Link } from 'react-router-dom'
-import { formatDate, slugify, type Post } from '../lib/posts'
+import { formatDate } from '../lib/format'
+import type { PostSummary } from '../lib/types'
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post, score }: { post: PostSummary; score?: number }) {
   return (
     <article className="post-card">
       <div className="meta">
-        <Link to={`/category/${slugify(post.category)}`} className="category-badge">{post.category}</Link>
-        <span>{formatDate(post.date)}</span>
-        <span>· {post.readingTime} min read</span>
+        <Link to={`/category/${post.category.slug}`} className="category-badge">{post.category.name}</Link>
+        <span>{formatDate(post.published_at)}</span>
+        <span>· {post.reading_time} min read</span>
+        {score !== undefined && <span className="score">· {Math.round(score * 100)}% match</span>}
       </div>
       <h2><Link to={`/post/${post.slug}`}>{post.title}</Link></h2>
       <p className="excerpt">{post.excerpt}</p>
       <div className="tag-row">
         {post.tags.map((t) => (
-          <Link key={t} to={`/tag/${slugify(t)}`} className="tag">#{t}</Link>
+          <Link key={t.slug} to={`/tag/${t.slug}`} className="tag">#{t.name}</Link>
         ))}
       </div>
     </article>

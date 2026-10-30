@@ -1,29 +1,39 @@
 import { useState } from 'react'
-import type { Post } from '../lib/posts'
+import { api, type ListParams } from '../lib/api'
+import { useApi } from '../lib/hooks'
 import PostCard from './PostCard'
+import Status from './Status'
 
 const PAGE_SIZE = 5
 
-export default function PostList({ posts }: { posts: Post[] }) {
+/** Server-paginated post list. Remount (via `key`) to reset to page 1 when filters change. */
+export default function PostList({ filters = {} }: { filters?: Omit<ListParams, 'page' | 'page_size'> }) {
   const [page, setPage] = useState(1)
-  const pages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE))
-  const current = Math.min(page, pages)
-  const visible = posts.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
-
-  if (posts.length === 0) return <p className="empty">No posts found.</p>
+  const state = useApi(
+    () => api.listPosts({ ...filters, page, page_size: PAGE_SIZE }),
+    [page, filters.category, filters.tag, filters.q],
+  )
 
   return (
-    <>
-      <div className="post-list">
-        {visible.map((p) => <PostCard key={p.slug} post={p} />)}
-      </div>
-      {pages > 1 && (
-        <nav className="pagination">
-          <button disabled={current === 1} onClick={() => setPage(current - 1)}>← Newer</button>
-          <span>Page {current} of {pages}</span>
-          <button disabled={current === pages} onClick={() => setPage(current + 1)}>Older →</button>
-        </nav>
-      )}
-    </>
+    <Status state={state}>
+      {(data) =>
+        data.items.length === 0 ? (
+          <p className="empty">No posts found.</p>
+        ) : (
+          <>
+            <div className="post-list">
+              {data.items.map((p) => <PostCard key={p.slug} post={p} />)}
+            </div>
+            {data.pages > 1 && (
+              <nav className="pagination">
+                <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Newer</button>
+                <span>Page {page} of {data.pages}</span>
+                <button disabled={page === data.pages} onClick={() => setPage(page + 1)}>Older →</button>
+              </nav>
+            )}
+          </>
+        )
+      }
+    </Status>
   )
 }
