@@ -13,12 +13,14 @@ Blog frontend built with React, TypeScript, Vite and React Router. Content comes
 - Sign up / log in modal (first name, last name, email, username, password)
 - **Chat assistant at `/chat`** (public): ask about posts, categories, likes and stats in Turkish or English;
   streamed answers with tool progress; admins can also ask about users
+- **HR assistant**: admins upload HR PDFs (admin panel → HR Documents); logged-in users ask HR questions in `/chat`
+  and get answers citing document and page
 - Admin panel at **`/admin`** (default login `murat` / `murat`): manage posts, create categories, tags and users
 - Responsive layout with automatic dark mode
 
 ## Run everything with Docker
 Clone [blog-api](https://github.com/ilkmurat/blog-api) and [blog-agent](https://github.com/ilkmurat/blog-agent)
-next to this repo, start Ollama on the host (`ollama serve`, model `qwen2.5:14b`), then:
+next to this repo, start Ollama on the host (`ollama serve`, model `qwen3:14b`), then:
 
 ```bash
 docker compose up -d --build                     # web + api + postgres + qdrant

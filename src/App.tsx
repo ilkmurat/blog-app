@@ -13,6 +13,7 @@ import AdminPosts from './pages/admin/AdminPosts'
 import PostEditor from './pages/admin/PostEditor'
 import TermAdmin from './pages/admin/TermAdmin'
 import AdminUsers from './pages/admin/AdminUsers'
+import AdminHr from './pages/admin/AdminHr'
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="categories" element={<TermAdmin kind="category" />} />
           <Route path="tags" element={<TermAdmin kind="tag" />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="hr" element={<AdminHr />} />
         </Route>
       </Route>
     </Routes>

@@ -53,6 +53,7 @@ export default function AdminLayout() {
           <NavLink to="/admin/categories">Categories</NavLink>
           <NavLink to="/admin/tags">Tags</NavLink>
           <NavLink to="/admin/users">Users</NavLink>
+          <NavLink to="/admin/hr">HR Documents</NavLink>
         </nav>
       </div>
       <Outlet />

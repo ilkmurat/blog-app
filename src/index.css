@@ -273,3 +273,11 @@ a:hover { color: var(--accent); }
 }
 .composer textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .composer .button { min-height: 48px; padding: 0 20px; }
+
+.section-note { margin: -8px 0 16px; }
+.small { font-size: .8rem; }
+.status-badge { font-size: .78rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: capitalize; }
+.status-badge.ready { background: color-mix(in srgb, #16a34a 15%, transparent); color: #16a34a; }
+.status-badge.processing { background: var(--accent-soft); color: var(--accent); }
+.status-badge.failed { background: color-mix(in srgb, #dc2626 15%, transparent); color: #dc2626; }
+.form input[type=file] { padding: 8px; }

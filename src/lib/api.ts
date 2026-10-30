@@ -1,5 +1,6 @@
 import type {
   AuthResponse,
+  HrDocument,
   LikeResult,
   Post,
   PostInput,
@@ -95,5 +96,22 @@ export const api = {
   logout: () => request<void>('/api/v1/auth/logout', { method: 'POST' }),
   me: () => request<User>('/api/v1/auth/me'),
   users: () => request<User[]>('/api/v1/users'),
+
+  hrDocuments: () => request<HrDocument[]>('/api/v1/hr/documents'),
+  deleteHrDocument: (id: number) => request<void>(`/api/v1/hr/documents/${id}`, { method: 'DELETE' }),
+  /** multipart upload: let the browser set the Content-Type boundary */
+  uploadHrDocument: async (file: File, title: string, topic: string) => {
+    const form = new FormData()
+    form.append('file', file)
+    if (title) form.append('title', title)
+    if (topic) form.append('topic', topic)
+    const res = await fetch(BASE + '/api/v1/hr/documents', {
+      method: 'POST',
+      body: form,
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+    })
+    if (!res.ok) throw await errorFrom(res)
+    return (await res.json()) as HrDocument
+  },
   createUser: (body: UserInput) => request<User>('/api/v1/users', { method: 'POST', body: JSON.stringify(body) }),
 }

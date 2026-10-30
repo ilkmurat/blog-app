@@ -79,3 +79,17 @@ export interface AuthResponse {
   token: string
   user: User
 }
+
+export interface HrDocument {
+  id: number
+  title: string
+  topic: string
+  filename: string
+  size_bytes: number
+  pages: number
+  chunk_count: number
+  status: 'processing' | 'ready' | 'failed'
+  error: string | null
+  uploaded_by: string | null
+  created_at: string
+}

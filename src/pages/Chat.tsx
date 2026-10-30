@@ -27,6 +27,8 @@ const TOOL_LABELS: Record<string, string> = {
   site_stats: 'Checking site stats',
   user_stats: 'Counting users',
   admin_list_users: 'Listing users (admin)',
+  hr_search: 'Searching HR documents',
+  hr_list_documents: 'Listing HR documents',
 }
 
 const SUGGESTIONS = [
@@ -35,6 +37,8 @@ const SUGGESTIONS = [
   'Kaç kullanıcı var? Son 7 günde kaç kişi giriş yaptı?',
   'Which posts talk about staying focused?',
 ]
+
+const HR_SUGGESTIONS = ['Yıllık iznim kaç gün?', 'Hangi HR dokümanları var?']
 
 function describeArgs(args: Record<string, unknown>): string {
   return Object.entries(args)
@@ -46,12 +50,15 @@ function AnswerMarkdown({ text }: { text: string }) {
   return (
     <Markdown
       components={{
-        // Site links stay inside the app; external links open in a new tab.
+        // Site links stay inside the app; external links open in a new tab. Anything else (e.g. a model
+        // writing [HR document](topic)) is not a real link and is rendered as plain text.
         a: ({ href = '', children }) =>
           href.startsWith('/') ? (
             <Link to={href}>{children}</Link>
-          ) : (
+          ) : /^https?:\/\//.test(href) ? (
             <a href={href} target="_blank" rel="noreferrer">{children}</a>
+          ) : (
+            <>{children}</>
           ),
       }}
     >
@@ -154,6 +161,7 @@ export default function Chat() {
         <h1 className="page-title">Ask Inkwell</h1>
         <p className="muted">
           Ask about posts, categories, tags, likes and site statistics — in Turkish or English.
+          {user ? ' You can also ask HR questions; answers come from the company HR documents.' : ' Log in to ask HR questions.'}
           {user?.is_admin && ' As an admin you can also ask about users.'}
         </p>
         {messages.length > 0 && (
@@ -164,7 +172,7 @@ export default function Chat() {
       <div className="chat-log" aria-live="polite">
         {messages.length === 0 && (
           <div className="suggestions">
-            {SUGGESTIONS.map((s) => (
+            {[...(user ? HR_SUGGESTIONS : []), ...SUGGESTIONS].map((s) => (
               <button key={s} className="suggestion" onClick={() => send(s)}>{s}</button>
             ))}
           </div>
